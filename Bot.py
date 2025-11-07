@@ -515,7 +515,6 @@ async def cancel_generation(callback: types.CallbackQuery, state: FSMContext):
     await start(callback.message, state)
 
 
-# Запуск
 async def main():
     print("✅ Бот запущен!")
     await dp.start_polling(bot)

@@ -475,23 +475,19 @@ async def generate_schedule(callback: types.CallbackQuery, state: FSMContext):
 
         await callback.message.answer(summary, parse_mode="Markdown")
 
-        # Отправляем расписание для каждого корта
         for court_num in [1, 2, 3]:
             court_schedule_text = generator.format_schedule_as_text(schedule, court_num)
 
-            # Разбиваем на части, если текст слишком длинный (лимит Telegram - 4096 символов)
-            max_length = 4000  # Оставляем запас
+            max_length = 4000
             if len(court_schedule_text) <= max_length:
                 await callback.message.answer(court_schedule_text, parse_mode="Markdown")
             else:
-                # Разбиваем по блокам времени
                 parts = court_schedule_text.split('\n\n')
                 current_part = f"*КОРТ {court_num}* (часть 1)\n" + "━" * 50 + "\n\n"
                 part_num = 1
 
-                for block in parts[1:]:  # Пропускаем заголовок
+                for block in parts[1:]:
                     if len(current_part) + len(block) + 2 > max_length:
-                        # Отправляем текущую часть
                         await callback.message.answer(current_part, parse_mode="Markdown")
                         await asyncio.sleep(0.3)
                         part_num += 1
@@ -499,13 +495,11 @@ async def generate_schedule(callback: types.CallbackQuery, state: FSMContext):
 
                     current_part += block + "\n\n"
 
-                # Отправляем последнюю часть
                 if current_part.strip():
                     await callback.message.answer(current_part, parse_mode="Markdown")
 
-            await asyncio.sleep(0.5)  # Небольшая задержка между кортами
+            await asyncio.sleep(0.5)
 
-        # Отправляем файл
         file = FSInputFile(output_file)
         await callback.bot.send_document(callback.message.chat.id, file, caption="📄 Полное расписание в Excel")
 

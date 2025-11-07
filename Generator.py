@@ -18,7 +18,7 @@ class Stage:
 
 @dataclass
 class ScheduleSlot:
-    court: int  # 1, 2, 3
+    court: int
     start_time: datetime
     end_time: datetime
     stage: Stage
